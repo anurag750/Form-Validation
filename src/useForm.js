@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
-import validate from "./validateInfo";
+import { useState, useEffect } from "react";
 
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({
     username: "",
     email: "",
     password: "",
-    paswword2: "",
+    password2: "",
   });
-
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,19 +18,20 @@ const useForm = (callback, validate) => {
     });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setErrors(validate(values));
+    setIsSubmitting(true);
+  };
+
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
       callback();
     }
   }, [errors]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setErrors(validate(values));
-    setIsSubmitting(true);
-  };
-
-  return { handleChange, values, handleSubmit, errors };
+  return { handleChange, handleSubmit, values, errors };
 };
 
 export default useForm;
